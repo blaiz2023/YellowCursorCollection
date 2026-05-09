@@ -1,4 +1,4 @@
-# Yellow Cursor Collection v2.0.075 / 09may2026 / MIT License
+# Yellow Cursor Collection v2.0.75 / 09may2026 / MIT License
 780 standard arrow pointers in an Interactive Archive with various color and animation variants.
 
 <img src="images/yellowcursorcollection-screenshot.jpg">
