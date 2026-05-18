@@ -37,9 +37,9 @@ uses gosswin2, gossroot, gossfast, gosstext, gossimg, gossio {$ifdef snd},gosssn
 //##
 //## ==========================================================================================================================================================================================================================
 //## Library.................. GUI (gossgui.pas)
-//## Version.................. 4.00.33365 (+5942) (Build no reduced by 5611 due to WordCore (now TextCore) removed to dedicated unit gosstext.pas - 16feb2026)
+//## Version.................. 4.00.33366 (+5942) (Build no reduced by 5611 due to WordCore (now TextCore) removed to dedicated unit gosstext.pas - 16feb2026)
 //## Items.................... 46
-//## Last Updated ............ 08may2026, 06may2026, 03may2026, 23apr2026, 22apr2026, 17apr2026, 15apr2026, 11apr2026, 07apr2026, 03apr2026,
+//## Last Updated ............ 14may2026, 08may2026, 06may2026, 03may2026, 23apr2026, 22apr2026, 17apr2026, 15apr2026, 11apr2026, 07apr2026, 03apr2026,
 //##                                      29mar2026, 26mar2026, 23mar2026, 18mar2026, 10mar2026, 06mar2026, 28feb2026, 26feb2026, 15feb2026, 01feb2026, 23jan2026, 13jan2026, 11jan2026, 07jan2026, 29dec2025, 27dec2025, 26dec2025, 17dec2025, 13dec2025, 12dec2025, 04dec2025, 01dec2025, 30nov2025, 28nov2025, 09nov2025, 06nov2025, 24oct2025, 08oct2025, 05oct2025, 29sep2025, 26sep2025, 18sep2025, 15sep2025, 09sep2025, 07sep2025, 28aug2025, 23aug2025, 15aug2025, 10aug2025, 08aug2025, 26jul2025, 24jul2025, 17jul2025, 14jul2025, 04jul2025, 16jun2025, 12jun2025, 09jun2025, 07jun2025, 03jun2025, 29may2025, 29apr2025, 13apr2025, 31mar2025, 24mar2025, 18feb2025, 28dec2024, 11dec2024, 29nov2024, 22nov2024, 15nov2024, 10nov2024, 04oct2024, 28aug2024, 01ug2024, 25jul2024, 28jun2024, 22mar2024, 09feb2024, 13dec2023, 25nov2023, 19may2023, 25feb2023, 30dec2022, 15nov2022, 06nov2022, 11oct2022, 28sep2022, 05jul2022, 29jun2022, 14jun2022, 31may2022, 14may2022, 30apr2022, 30mar2022, 27feb2022, 08feb2022, 31jan2021, 30dec2021,
 //##                                      19dec2021, 30sep2021, 29aug2021, 09aug2021, 27jul2021, 07jul2021, 20jun2021, 02jun2021, 30may2021, 12may2021, 10may2021, 30apr2021, 19apr2021, 14apr2021, 03apr2021, 31mar2021, 20mar2021, 08mar2021, 26feb2021, 01feb2021, 28jan2021, 11oct2020, 25sep2020, 07sep2020, 26aug2020, 22aug2020, 28jul2020, 23may2020, 10may2020
 //## Lines of Code............ 53,500+
@@ -76,7 +76,7 @@ uses gosswin2, gossroot, gossfast, gosstext, gossimg, gossio {$ifdef snd},gosssn
 //## | tbasicapp              | tobjectex         | 1.00.045  | 10dec2025   | Basic GUI app structure, complete with GUI (tbasicsystem) - 10aug2024, 30jul2021, 24jul2021
 //## | trnd8                  | tobject           | 1.00.020  | 29nov2023   | Random stream generator
 //## | tbackgroundmanager     | tobject           | 1.00.334  | 06may2026   | Handles static, animated and dynamic background imagery for "tbasicsystem" - 02mar2026, 07jan2026, 13dec2025, 03jun2025
-//## | tbasicsystem           | tobject           | 1.00.6017 | 08may2026   | GUI rendering and control system - 23apr2026, 07apr2026, 03apr2026, 26mar2026, 10mar2026, 06mar2026, 01feb2026, 13jan2026, 29dec2025, 13dec2025, 01dec2025, 09nov2025, 08oct2025, 17sep2025, 09sep2025, 31aug2025, 27aug2025, 17aug2025, 10aug2025, 26jul2025, 04jul2025, 28may2025, 15may2025, 21apr2025, 18feb2025, 04feb2025: auto switches between using buffer 1+2 or only buffer 1 for optimal rendering, 28jan2025, 28nov2024: supports background exclusion areas, 21nov2024: background pauses for window resize/reposition, 18nov2024, 26jul2024m 28jun2024: fixed part paint, 09dec2023, 19nov2023, 12feb2023, 20may2022, 27mar2022: updated onaccept proc for deep drag and drop support, 26feb2022, Fixed ibuffer.w/h mismatch with mustmask - 21sep2021, 29aug2021, 28jul2021, 07jul2021, 18jun2021, 29may2021, 14apr2021, 03apr2021, 08mar2021, 25feb2021, 11oct2020, 28jul2020, 20may2020
+//## | tbasicsystem           | tobject           | 1.00.6018 | 14may2026   | GUI rendering and control system - 08may2026, 23apr2026, 07apr2026, 03apr2026, 26mar2026, 10mar2026, 06mar2026, 01feb2026, 13jan2026, 29dec2025, 13dec2025, 01dec2025, 09nov2025, 08oct2025, 17sep2025, 09sep2025, 31aug2025, 27aug2025, 17aug2025, 10aug2025, 26jul2025, 04jul2025, 28may2025, 15may2025, 21apr2025, 18feb2025, 04feb2025: auto switches between using buffer 1+2 or only buffer 1 for optimal rendering, 28jan2025, 28nov2024: supports background exclusion areas, 21nov2024: background pauses for window resize/reposition, 18nov2024, 26jul2024m 28jun2024: fixed part paint, 09dec2023, 19nov2023, 12feb2023, 20may2022, 27mar2022: updated onaccept proc for deep drag and drop support, 26feb2022, Fixed ibuffer.w/h mismatch with mustmask - 21sep2021, 29aug2021, 28jul2021, 07jul2021, 18jun2021, 29may2021, 14apr2021, 03apr2021, 08mar2021, 25feb2021, 11oct2020, 28jul2020, 20may2020
 //## | tbasiccontrol          | tobject           | 1.00.1270 | 29mar2026   | Flicker free base control with built-in _onnotify/_ontimer and _onpaint procs for easy customisation - 23mar2026, 25feb2026, 26dec2025, 04dec2025, 30nov2025, 05sep2025, 19jul2025, 03jul2025, 24may2025, 19apr2025, 31mar2025, 06jan2025, 25dec2024, 28nov2024, 19aug2024, 28jun2024: fixed ldso4 leak, 02dec2023: ldso4 cliparea handling, 17nov2023, 12jan2022, 09sep2021, 27mar2021, 11oct2020, 20may2020, 12apr2020, 14mar2020
 //## | tbasicimgview          | tbasiccontrol     | 1.00.755  | 03apr2026   | Animated image viewer - 18feb2025, 30jan2025, 26dec2024
 //## | tbasichelp             | tbasiccontrol     | 1.00.100  | 16may2025   | Realtime help scroller - 02aug2024, 12apr2020, 25mar2020
@@ -1169,7 +1169,6 @@ type
     //.form support - 18jan2025
     function form__create(xacceptfiles:boolean):hauto;//01jun2025, 28may2025
 //    procedure form__center(xmonitorindex:longint);
-    function form__monitorindex:longint;
     procedure form__setcaption(x:string);
     function form__bordersize:longint;
     function form__minwidth:longint;
@@ -1297,6 +1296,7 @@ type
 
     property winemaximised:boolean read iwinemaximised;
     procedure form__center(xmonitorindex:longint);
+    function form__monitorindex:longint;
 
     //closelock
     property mustcloseprompt:boolean read imustcloseprompt write imustcloseprompt;//allow host program to set TRUE or FALSE to PROMPT before closing the program - 26aug2021
@@ -6339,8 +6339,8 @@ xname:=strlow(xname);
 if (strcopy1(xname,1,8)='gossgui.') then strdel1(xname,1,8) else exit;
 
 //get
-if      (xname='ver')        then result:='4.00.33365'
-else if (xname='date')       then result:='08may2026'
+if      (xname='ver')        then result:='4.00.33366'
+else if (xname='date')       then result:='14may2026'
 else if (xname='name')       then result:='GUI'
 else
    begin
@@ -25811,6 +25811,7 @@ var
    xmustupdate:boolean;
 begin
 try
+
 //check
 if (iform_handle=0) or (not app__cansetwindowalpha) or (not showing) then exit;
 

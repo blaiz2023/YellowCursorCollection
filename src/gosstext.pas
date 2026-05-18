@@ -8986,7 +8986,6 @@ for p:=v.wfrom to v.wto do if xfastchar(ff,p,1,fc) and (fc.cs=wc_t) and xmuststy
 
    end;
 
-
 //header + used fonts ----------------------------------------------------------
 
 sa('{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057{\fonttbl{\f0\fnil\fcharset0 '+xsafeval( font__realname(tv2( fmap[0] ).name) )+';}');//root font

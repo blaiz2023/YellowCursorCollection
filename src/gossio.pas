@@ -31,10 +31,10 @@ uses gosswin2, gossroot, gosswin, gossteps;
 //##
 //## ==========================================================================================================================================================================================================================
 //## Library.................. disk/folder/file support (gossio.pas)
-//## Version.................. 4.00.5203 (+337)
+//## Version.................. 4.00.5205 (+338)
 //## Items.................... 8
-//## Last Updated ............ 06may2026, 07mar2026, 25feb2026, 17feb2026, 09nov2025, 05oct2025, 28sep2025, 18sep2025, 28aug2025, 17aug2025, 11aug2025, 12jun2025, 01jun2025, 28may2025, 01may2025, 11apr2025, 31mar2025, 21mar2025, 08mar2025, 20feb2025, 11jan2025, 18dec2024, 18nov2024, 15nov2024, 22aug2024, 20jul2024, 23jun2024, 30apr2024
-//## Lines of Code............ 6,300+
+//## Last Updated ............ 19may2026, 15may2026, 06may2026, 07mar2026, 25feb2026, 17feb2026, 09nov2025, 05oct2025, 28sep2025, 18sep2025, 28aug2025, 17aug2025, 11aug2025, 12jun2025, 01jun2025, 28may2025, 01may2025, 11apr2025, 31mar2025, 21mar2025, 08mar2025, 20feb2025, 11jan2025, 18dec2024, 18nov2024, 15nov2024, 22aug2024, 20jul2024, 23jun2024, 30apr2024
+//## Lines of Code............ 6,400+
 //## Origin .................. Human generated and maintained
 //##
 //## main.pas ................ App specific code
@@ -60,7 +60,7 @@ uses gosswin2, gossroot, gosswin, gossteps;
 //## |------------------------|-------------------|-----------|-------------|--------------------------------------------------------
 //## | filecache__*           | family of procs   | 1.00.157  | 28sep2025   | Cache open file handles for faster repeat file IO operations, 17aug2025, 29apr2024, 12apr2024: created
 //## | key__*                 | family of procs   | 1.00.022  | 26aug2025   | Key generation for security work
-//## | io__*                  | family of procs   | 1.00.3797 | 05may2026   | Disk, folder and file procs + 64bit file support, 06mar2026, 17feb2026, 09nov2025, 05oct2025, 28sep2025, 18sep2025, 28aug2025, 12jun2025, 11jun2025, 18may2025, 14may2025, 11apr2025, 20feb2025, 25jan2025, 11jan2025: fixed "io__fromfile64c()" for "!:\" files, 20dec2024, 16dec2024: io__copyfile upgraded, 18nov2024: tea3 format detection, 22aug2024: io__folderlist procs added, 19jul2024: io__filelist1/21() subfolder support added, 30apr2024: fixed io__ double ptr ref, 30apr2024: io__tofileex64() updated to flush buffer for correct nav__* filesize reporting, 17apr2024: procs renamed
+//## | io__*                  | family of procs   | 1.00.3798 | 15may2026   | Disk, folder and file procs + 64bit file support, 05may2026, 06mar2026, 17feb2026, 09nov2025, 05oct2025, 28sep2025, 18sep2025, 28aug2025, 12jun2025, 11jun2025, 18may2025, 14may2025, 11apr2025, 20feb2025, 25jan2025, 11jan2025: fixed "io__fromfile64c()" for "!:\" files, 20dec2024, 16dec2024: io__copyfile upgraded, 18nov2024: tea3 format detection, 22aug2024: io__folderlist procs added, 19jul2024: io__filelist1/21() subfolder support added, 30apr2024: fixed io__ double ptr ref, 30apr2024: io__tofileex64() updated to flush buffer for correct nav__* filesize reporting, 17apr2024: procs renamed
 //## | nav__*                 | family of procs   | 1.00.300  | 26feb2024   | Worker procs for file/folder/navigation lists
 //## | idisk__*               | family of procs   | 1.00.132  | 15mar2025   | Internal disk support "!:\" - 20jul2024: reintegrated into Gossamer
 //## | s12__*                 | family of procs   | 1.00.045  | 08mar2025   | Read/write 12bit io streams
@@ -229,7 +229,7 @@ function io__appdata:string;//out of date
 function io__windrive:string;//14DEC2010
 function io__winroot:string;//11DEC2010
 function io__winsystem:string;//11DEC2010
-function io__wintemp:string;//11DEC2010
+function io__wintemp:string;//Note: A file written to this path (wintemp) under the MSIX full trust mode can be shared with the system - 19may2026, 11DEC2010
 function io__windesktop:string;//17MAY2013
 function io__winstartup:string;
 function io__winprograms:string;//start button > programs > - 11NOV2010
@@ -244,7 +244,9 @@ function io__tempfile__new(dpre,dext:string):string;//temp filenames - 25jun2022
 function io__tempfile__newNameID(dpre,dext:string):string;//for use with temp filenames etc - 25jun2022
 
 function io__runwait(const xcmd,xparams:string):boolean;//24aug2025
+function io__runwait1(const xcmd,xparams:string;const xwaitms:longint):boolean;//15may2026
 function io__runwait2(const xcmd,xparams:string;xwaitms:longint;xadmin:boolean;var xexitcode:longint):boolean;//24aug2025
+
 procedure io__createlink(const df,sf,dswitches,iconfilename:string);//10apr2019, 14NOV2010
 function io__exename:string;
 function io__ownname:string;
@@ -515,8 +517,8 @@ xname:=strlow(xname);
 if (strcopy1(xname,1,7)='gossio.') then strdel1(xname,1,7) else exit;
 
 //get
-if      (xname='ver')        then result:='4.00.5203'
-else if (xname='date')       then result:='06may2026'
+if      (xname='ver')        then result:='4.00.5205'
+else if (xname='date')       then result:='19may2026'
 else if (xname='name')       then result:='IO'
 else
    begin
@@ -2152,6 +2154,13 @@ var
    int1:longint;
 begin
 result:=io__runwait2(xcmd,xparams,0,false,int1);
+end;
+
+function io__runwait1(const xcmd,xparams:string;const xwaitms:longint):boolean;//15may2026
+var
+   int1:longint;
+begin
+result:=io__runwait2(xcmd,xparams,xwaitms,false,int1);
 end;
 
 function io__runwait2(const xcmd,xparams:string;xwaitms:longint;xadmin:boolean;var xexitcode:longint):boolean;//24aug2025

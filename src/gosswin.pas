@@ -31,9 +31,9 @@ interface
 //##
 //## ==========================================================================================================================================================================================================================
 //## Library.................. 32 and 64 bit Windows api's (gosswin.pas)
-//## Version.................. 4.00.2100 (+160)
+//## Version.................. 4.00.2112 (+161)
 //## Items.................... 6
-//## Last Updated ............ 22apr2026, 11apr2026, 02apr2026, 17dec2025, 16dec2025, 14dec2025, 08oct2025, 05oct2025, 26sep2025, 05sep2025, 31aug2025, 20aug2025, 11aug2025, 09aug2025, 29jul2025, 26jul2025, 04may2025, 17feb2024
+//## Last Updated ............ 14may2026, 11may2026, 22apr2026, 11apr2026, 02apr2026, 17dec2025, 16dec2025, 14dec2025, 08oct2025, 05oct2025, 26sep2025, 05sep2025, 31aug2025, 20aug2025, 11aug2025, 09aug2025, 29jul2025, 26jul2025, 04may2025, 17feb2024
 //## Lines of Code............ 7,800+
 //## Origin .................. Human generated and maintained
 //##
@@ -59,10 +59,10 @@ interface
 //## | Name                   | Hierarchy         | Version   | Date        | Update history / brief description of function
 //## |------------------------|-------------------|-----------|-------------|--------------------------------------------------------
 //## | xbox__*                | Xbox Controller   | 1.00.741  | 10aug2025   | Xbox Controller support with ease-of-access support, complete with persistent button clicks and variable inputs/outputs scaled to floats between 0..1 and -1..1 - 29jul2025, 25jan2025
-//## | win__*                 | Win32 support     | 1.00.870  | 11apr2026   | Dynamic load and management procs for Win32 api calls - 03dec2025, 02oct2025, 26sep2025, 05sep2025, 31aug2025
+//## | win__*                 | Win32 support     | 1.00.875  | 11may2026   | Dynamic load and management procs for Win32 api calls - 11apr2026, 03dec2025, 02oct2025, 26sep2025, 05sep2025, 31aug2025
 //## | win____*/win2____      | Win32 general     | 1.00.368  | 22apr2026   | Win32 general api procs for Windows specific features and functionality.  The leading "win____" denotes a Window's API call - 05oct2025, 11aug2025, 26jul2025, 29apr2025, 01dec2024, 26nov2024, 04mar2024
 //## | net____*               | Win32 network     | 1.00.110  | 04mar2024   | Win32 network api procs for low level network IO.  The leading "net____" denotes a Window's network API call
-//## | reg__*                 | family of procs   | 1.00.032  | 24jun2024   | Registry access procs (requires admin terminal for write/delete) - 03mar2024
+//## | reg__*                 | family of procs   | 1.00.038  | 11may2026   | Registry access procs (requires admin terminal for write/delete) - 24jun2024, 03mar2024
 //## | service__*             | family of procs   | 1.00.170  | 04mar2024   | Service support, permits seamless switching from console app to app as a service
 //## | console support        | misc. procs       | 1.00.050  |   jan2024   | Console support procs
 //## ==========================================================================================================================================================================================================================
@@ -2769,6 +2769,7 @@ var
 
 const win____emergencyfallback_engaged=true;
 
+function win____ExpandEnvironmentStrings(lpSrc: PAnsiChar; lpDst: PAnsiChar; nSize: DWORD32): DWORD32; stdcall; external kernel32 name 'ExpandEnvironmentStringsA';
 function win____ChooseColor(var CC: TChooseColor): Bool; stdcall; external comdlg32  name 'ChooseColorA';
 function win____GetSaveFileName(var OpenFile: TOpenFilename): Bool; stdcall; external comdlg32  name 'GetSaveFileNameA';
 function win____GetOpenFileName(var OpenFile: TOpenFilename): Bool; stdcall; external comdlg32 name 'GetOpenFileNameA';
@@ -2840,6 +2841,9 @@ function win____GlobalLock(hMem: hauto): pauto; stdcall; external kernel32 name 
 function win____GlobalAlloc(uFlags: uint32; dwBytes: dword32): hauto; stdcall; external kernel32 name 'GlobalAlloc';
 function win____GlobalReAlloc(hMem: hauto; dwBytes: dword32; uFlags: uint32): hauto; stdcall; external kernel32 name 'GlobalReAlloc';
 function win____LoadCursorFromFile(lpFileName: PAnsiChar): hauto; stdcall; external user32 name 'LoadCursorFromFileA';
+function win____SetSystemCursor(hcur: HICON; id: DWORD32): BOOL; stdcall; external user32 name 'SetSystemCursor';//11may2026
+function win____CopyIcon(hcur:hauto):hauto; stdcall; external user32 name 'CopyIcon';//11may2026
+function win____CopyImage(hcur:hauto;imageType:uint32;dWidth,dheight:longint32;dFlags:uint32):hauto; stdcall; external user32 name 'CopyImage';//11may2026
 
 function win____GetDefaultPrinter(xbuffer:pauto;var xsize:longint):bool; stdcall; external winspl name 'GetDefaultPrinterA';
 function win____GetVersionEx(var lpVersionInformation: TOSVersionInfo): BOOL; stdcall; external kernel32 name 'GetVersionExA';
@@ -3242,6 +3246,9 @@ function msg_m32(const x:msg_message):longint32;
 
 function msg_l3264(const x:msg_lparam):longint3264;
 
+//com
+function com__create(const classID:tguid):iunknown;//14may2026
+
 //file
 function win__FindMatchingFile(var F: TSearchRec): longint32;
 function win__FindFirst(const Path: string; Attr: longint; var F: TSearchRec): longint;
@@ -3265,7 +3272,7 @@ function reg__deletekey(xrootkey:hkey;xuserkey:string):boolean;
 function reg__setstr(xkey:hkey;const xname,xvalue:string):boolean;
 function reg__setstrx(xkey:hkey;xname,xvalue:string):boolean;
 function reg__setint(xkey:hkey;xname:string;xvalue:longint):boolean;
-function reg__readval(xrootstyle:longint;xname:string;xuseint:boolean):string;
+function reg__readval(const xrootstyle:longint;xname:string;const xuseint:boolean):string;//11may2026
 
 
 //service procs ----------------------------------------------------------------
@@ -3296,7 +3303,7 @@ procedure win__init;//should be called from app__boot
 
 function win__makeproc(x:string;var xcore:twinscannerinfo;var e:string):boolean;//03dec2025
 function win__makeprocs(const sf,df,dversionlabel:string):boolean;
-procedure win__make_gosswin2_pas;
+procedure win__make_gosswin2_pas;//11may2026
 
 function win__errmsg(const e:longint):string;
 function win__dllname(const xindex:longint):string;
@@ -3529,8 +3536,8 @@ xname:=strlow(xname);
 if (strcopy1(xname,1,8)='gosswin.') then strdel1(xname,1,8) else exit;
 
 //get
-if      (xname='ver')        then result:='4.00.2100'
-else if (xname='date')       then result:='22apr2026'
+if      (xname='ver')        then result:='4.00.2112'
+else if (xname='date')       then result:='14may2026'
 else if (xname='name')       then result:='Win32'
 else
    begin
@@ -3755,6 +3762,22 @@ begin
 end;
 
 
+//com procs --------------------------------------------------------------------
+
+function com__create(const classID:tguid):iunknown;//14may2026
+begin
+
+if (s_ok<>win____CoCreateInstance( classID ,nil ,CLSCTX_INPROC_SERVER or CLSCTX_LOCAL_SERVER ,iunknown ,result ) ) then
+   begin
+
+   result   :=nil;
+
+   end;
+
+end;
+
+
+//find procs -------------------------------------------------------------------
 
 function win__FindMatchingFile(var F: TSearchRec): longint;
 var
@@ -3958,9 +3981,10 @@ begin
 result:=(0=win____RegSetValueEx(xkey,pchar(xname),0,reg_dword,@xvalue,sizeof(xvalue)));
 end;
 
-function reg__readval(xrootstyle:longint;xname:string;xuseint:boolean):string;
+function reg__readval(const xrootstyle:longint;xname:string;const xuseint:boolean):string;
 label//xrootstyle: 0=current user, 1=current machine
    skipend;
+
 //  HKEY_CLASSES_ROOT     = $80000000;
 //  HKEY_CURRENT_USER     = $80000001;
 //  HKEY_LOCAL_MACHINE    = $80000002;
@@ -3970,56 +3994,85 @@ label//xrootstyle: 0=current user, 1=current machine
 //  HKEY_DYN_DATA         = $80000006;
 var
    k:hkey;
-   xbuf:array[0..255] of char;
+   xbuf:array[0..1999] of char;//increased from 256c to 2,000c - 11may2026
    xbuflen:cardinal;
    xlen,p:longint;
    xvalname:string;
    v:tint4;
+
 begin
-try
+
 //defaults
-result:='';
+result      :='';
+xvalname    :='';
+
 //init
-xvalname:='';
-xlen:=low__len32(xname);
-if (xlen<=0) then goto skipend;
+xlen        :=low__len32(xname);
+
+//check
+if (xlen<=0) then exit;
+
+try
+
 //split
 for p:=xlen downto 1 do
 begin
+
 if (xname[p-1+stroffset]='\') then
    begin
-   xvalname:=strcopy1(xname,p+1,xlen);
-   xname:=strcopy1(xname,1,p-1);
+
+   xvalname :=strcopy1(xname,p+1,xlen);
+   xname    :=strcopy1(xname,1,p-1);
+
    break;
+
    end;
+
 end;//p
+
 //.enforcing trailing slash for xname - 28may2022
 if (strcopy1(xname,low__len32(xname),1)<>'\') then xname:=xname+'\';
+
 //get
-xbuflen:=sizeof(xbuf);
+xbuflen     :=sizeof(xbuf);
+
 case xrootstyle of
 0:if (win____regopenkeyex(HKEY_CURRENT_USER,pchar(xname),0,KEY_READ,k)<>ERROR_SUCCESS) then goto skipend;
 1:if (win____regopenkeyex(HKEY_LOCAL_MACHINE,pchar(xname),0,KEY_READ,k)<>ERROR_SUCCESS) then goto skipend;
 else goto skipend;
 end;
-//set
+
 try
+
+//set
 fillchar(xbuf,sizeof(xbuf),0);
+
 if (win____regqueryvalueex(k,pchar(xvalname),nil,nil,@xbuf,@xbuflen)=ERROR_SUCCESS) then
    begin
+
    if xuseint then
       begin
-      v.bytes[0]:=ord(xbuf[0]);
-      v.bytes[1]:=ord(xbuf[1]);
-      v.bytes[2]:=ord(xbuf[2]);
-      v.bytes[3]:=ord(xbuf[3]);
-      result:=intstr32(v.val);
+
+      v.bytes[0]      :=ord(xbuf[0]);
+      v.bytes[1]      :=ord(xbuf[1]);
+      v.bytes[2]      :=ord(xbuf[2]);
+      v.bytes[3]      :=ord(xbuf[3]);
+      result          :=intstr32(v.val);
+
       end
-   else result:=string(xbuf);
+   else begin
+
+      result          :=string(xbuf);
+
+      end;
+
    end;
+
 except;end;
+
 //close
 win____regclosekey(k);
+
 skipend:
 except;end;
 end;
@@ -5430,9 +5483,9 @@ end;//case
 
 end;
 
-procedure win__make_gosswin2_pas;
+procedure win__make_gosswin2_pas;//11may2026
 const
-   dversionlabel='4.00.542';//'ver' - 15dec2025
+   dversionlabel='4.00.545';//'ver' - 11may2026, 15dec2025
 begin
 
 win__makeprocs( io__asfolderNIL(io__extractfilepath(io__exename))+'gosswin.p'+'as', io__asfolderNIL(io__extractfilepath(io__exename))+'gosswin2.p'+'as' ,dversionlabel );
